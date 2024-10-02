@@ -1,8 +1,8 @@
 # Identificação
 
-* Nome: 
-* Email (@ccc): 
-* Matrícula: 
+* Nome: Nicole Brito Maracajá
+* Email (@ccc): nicole.brito.maracaja@!ccc.ufcg.edu.br
+* Matrícula: 123111413
 
 # Roteiro: isAVL
 

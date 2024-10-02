@@ -8,16 +8,40 @@ public class BST {
     private int size;
 
     public boolean isAVL() {
-        //TODO: implementar
-        return false;
+        if (isEmpty()){
+            return true;
+        }
+        return isBalanced();
+    }
+
+    //verifica se a árvore pende para a esquerda
+    public boolean isLeftPending(){
+        return balance(this.root) > 1;
+    }
+
+    //verifica se a árvore pende para a direita
+    public boolean isRightPending(){
+        return balance(this.root) < 1;
+    }
+
+    //verifica se a árvore está balanceada com recursão
+    public boolean isBalanced(){
+        return isBalanced(this.root);
+    }
+
+    private boolean isBalanced(Node node){
+        if (node == null){
+            return true;
+        }
+        int balanceFactor = balance(node);
+        return Math.abs(balanceFactor) <= 1 && isBalanced(node.left) && isBalanced(node.right);
     }
 
     /**
      * Retorna a altura da árvore.
      */
     public int height() {
-        //TODO implementar
-        return -1;
+        return height(this.root);
     }
 
     /**
@@ -25,11 +49,64 @@ public class BST {
      * para recursão e para o balance.
      */
     private int height(Node node) {
-        return -1;
+        if (node == null){
+            return -1;
+        } else {
+            return 1 + Math.max(height(node.left), height(node.right));
+        }
     }
 
+    //calcula o balance dos nós
     private int balance(Node node) {
-        return -1;
+        if (node == null){
+            return 0;
+        } else {
+            return height(node.left) - height(node.right);
+        }
+    }
+
+    //rotação para a esquerda
+    public Node rotateLeft(Node current){
+        Node pivot = current.right;
+        current.right = pivot.left;
+        pivot.left = current;
+        return pivot;
+    }
+
+    //rotação para a direita
+    public Node rotateRight(Node current){
+        Node pivot = current.left;
+        current.left = pivot.right;
+        pivot.right = current;
+        return pivot;
+    }
+
+    public Node rebalance(Node current){
+        int balanceFactor = balance(current);
+
+        //desbalanceada para a esquerda (rotação à direita)
+        if (balanceFactor > 1 && (height(current.left.left) >= height(current.left.right))){
+            return rotateRight(current);
+        }
+
+        //desbalanceada para a direita (rotação à esquerda)
+        if (balanceFactor < -1 && (height(current.right.right) >= height(current.right.left))){
+            return rotateLeft(current);
+        }
+
+        //rotação dupla à esquerda
+        if (balanceFactor > 1 && (height(current.left.right) > height(current.left.left))){
+            current.left = rotateLeft(current.left);
+            return rotateRight(current);
+        }
+
+        //rotação dupla à direita
+        if (balanceFactor < -1 && (height(current.right.left) > height(current.right.right))){
+            current.right = rotateRight(current.right);
+            return rotateLeft(current);
+        }
+
+        return current;
     }
 
     /**
@@ -91,8 +168,10 @@ public class BST {
                     aux = aux.right;
                 }
             }
+
+            this.root = rebalance(this.root);
         }
-        
+
     }
     
     
@@ -235,6 +314,8 @@ public class BST {
         if (toRemove != null) {
             remove(toRemove);
             this.size -= 1;
+
+            this.root = rebalance(this.root);
         }
         
     }
@@ -286,6 +367,8 @@ public class BST {
             toRemove.value = sucessor.value;
             remove(sucessor);
         }
+
+        this.root = rebalance(this.root);
             
     }
 
