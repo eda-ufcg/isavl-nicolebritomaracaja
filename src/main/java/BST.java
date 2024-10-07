@@ -65,44 +65,66 @@ public class BST {
         }
     }
 
-    //rotação para a esquerda
+    //rotação para a esquerda (desbalanceado para a direita)
     public Node rotateLeft(Node current){
         Node pivot = current.right;
         current.right = pivot.left;
         pivot.left = current;
+
+        pivot.parent = current.parent;
+        current.parent = pivot;
+
+        if (pivot.parent != null){
+            if (pivot.parent.left == current){
+                pivot.parent.left = pivot;
+            } else {
+                pivot.parent.right = pivot;
+            }
+        } else {
+            this.root = pivot;
+        }
+        
         return pivot;
     }
 
-    //rotação para a direita
+    //rotação para a direita (desbalanceado para a esquerda)
     public Node rotateRight(Node current){
-        Node pivot = current.left;
+        NNode pivot = current.left;
         current.left = pivot.right;
         pivot.right = current;
+
+        pivot.parent = current.parent;
+        current.parent = pivot;
+
+        if (pivot.parent != null){
+            if (pivot.parent.right == current){
+                pivot.parent.right = pivot;
+            } else {
+                pivot.parent.left = pivot;
+            }
+        } else {
+            this.root = pivot;
+        }
+        
         return pivot;
     }
 
     public Node rebalance(Node current){
         int balanceFactor = balance(current);
 
-        //desbalanceada para a esquerda (rotação à direita)
-        if (balanceFactor > 1 && (height(current.left.left) >= height(current.left.right))){
+        //desbalanceado para a esquerda (rotaciona para a direita)
+        if (balance > 1){
+            if (balance(current.left) < 0){
+                current.left = rotateLeft(current.left);
+            }
             return rotateRight(current);
         }
 
-        //desbalanceada para a direita (rotação à esquerda)
-        if (balanceFactor < -1 && (height(current.right.right) >= height(current.right.left))){
-            return rotateLeft(current);
-        }
-
-        //rotação dupla à esquerda
-        if (balanceFactor > 1 && (height(current.left.right) > height(current.left.left))){
-            current.left = rotateLeft(current.left);
-            return rotateRight(current);
-        }
-
-        //rotação dupla à direita
-        if (balanceFactor < -1 && (height(current.right.left) > height(current.right.right))){
-            current.right = rotateRight(current.right);
+        //desbalanceado para a direita (rotaciona para a esquerda)
+        if (balance < -1){
+            if (balance(current.right) > 0){
+                current.right = rotateRight(current.right);
+            }
             return rotateLeft(current);
         }
 
