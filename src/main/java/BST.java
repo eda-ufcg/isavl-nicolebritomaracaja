@@ -89,7 +89,7 @@ public class BST {
 
     //rotação para a direita (desbalanceado para a esquerda)
     public Node rotateRight(Node current){
-        NNode pivot = current.left;
+        Node pivot = current.left;
         current.left = pivot.right;
         pivot.right = current;
 
@@ -113,7 +113,7 @@ public class BST {
         int balanceFactor = balance(current);
 
         //desbalanceado para a esquerda (rotaciona para a direita)
-        if (balance > 1){
+        if (balanceFactor > 1){
             if (balance(current.left) < 0){
                 current.left = rotateLeft(current.left);
             }
@@ -121,7 +121,7 @@ public class BST {
         }
 
         //desbalanceado para a direita (rotaciona para a esquerda)
-        if (balance < -1){
+        if (balanceFactor < -1){
             if (balance(current.right) > 0){
                 current.right = rotateRight(current.right);
             }
